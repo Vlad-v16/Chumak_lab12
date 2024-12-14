@@ -1,0 +1,58 @@
+#include <iostream>
+#include <windows.h>
+
+using namespace std;
+
+class Account 
+{
+protected:
+    double balance;
+    int accountNumber;
+
+public:
+    Account(int accNum, double initialBalance) : accountNumber(accNum), balance(initialBalance) {}
+
+    void deposit(double amount) 
+    {
+        balance += amount;
+        cout << "Депозит: " << amount << ", Новий баланс: " << balance << endl;
+    }
+
+    double getBalance() const { return balance; }
+    int getAccountNumber() const { return accountNumber; }
+};
+
+class CheckingAccount : public Account 
+{
+private:
+    double overdraftLimit;
+
+public:
+    CheckingAccount(int accNum, double initialBalance, double limit)
+        : Account(accNum, initialBalance), overdraftLimit(limit) {}
+
+    void withdraw(double amount) 
+    {
+        if (balance - amount >= -overdraftLimit) 
+        {
+            balance -= amount;
+            cout << "Знято: " << amount << ", Новий баланс: " << balance << endl;
+        }
+        else 
+        {
+            cout << "Операція відхилена: перевищено ліміт овердрафту!" << endl;
+        }
+    }
+};
+
+int main() 
+{
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    CheckingAccount acc(12345, 100.0, 50.0);
+    acc.deposit(150.0);  
+    acc.withdraw(200.0);    
+    acc.withdraw(120.0);    
+    return 0;
+}
